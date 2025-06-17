@@ -9,11 +9,7 @@ def check_ssl(domain):
         with socket.create_connection((domain, 443), timeout=5) as sock:
             with context.wrap_socket(sock, server_hostname=domain) as ssock:
                 cert = ssock.getpeercert()
-                return {
-                    "valid": True,
-                    "issuer": cert.get("issuer"),
-                    "subject": cert.get("subject")
-                }
+                return {"valid": True, "issuer": cert.get("issuer"), "subject": cert.get("subject")}
     except Exception as e:
         return {"valid": False, "error": str(e)}
 
@@ -28,34 +24,35 @@ def check_tech_stack(domain):
     techs = set()
     try:
         res = requests.get(f"https://{domain}", timeout=5)
-        html = res.text
+        html = res.text.lower()
         headers = res.headers
         soup = BeautifulSoup(html, 'html.parser')
 
-        generator = soup.find("meta", {"name": "generator"})
-        if generator and generator.get("content"):
-            techs.add(generator["content"])
+        gen = soup.find("meta", {"name": "generator"})
+        if gen and gen.get("content"):
+            techs.add(gen["content"])
 
         if "server" in headers:
             techs.add(f"Server: {headers['server']}")
         if "x-powered-by" in headers:
             techs.add(f"X-Powered-By: {headers['x-powered-by']}")
 
-        if "wp-content" in html:
-            techs.add("WordPress")
-        if "cdn.shopify.com" in html:
-            techs.add("Shopify")
-        if "drupal.js" in html:
-            techs.add("Drupal")
-        if "static.wixstatic.com" in html:
-            techs.add("Wix")
-        if "squarespace.com" in html:
-            techs.add("Squarespace")
-        if "react" in html.lower():
+        # simple HTML patterns
+        for marker, name in [
+            ("wp-content", "WordPress"),
+            ("cdn.shopify.com", "Shopify"),
+            ("drupal.js", "Drupal"),
+            ("static.wixstatic.com", "Wix"),
+            ("squarespace.com", "Squarespace"),
+        ]:
+            if marker in html:
+                techs.add(name)
+
+        if "react" in html:
             techs.add("React (likely)")
-        if "vue" in html.lower():
+        if "vue" in html:
             techs.add("Vue.js (likely)")
 
         return list(techs) if techs else ["Unknown"]
     except Exception as e:
-        return [f"Error: {str(e)}"]
+        return [f"Error: {e}"]
