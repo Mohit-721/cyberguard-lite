@@ -21,17 +21,17 @@ def get_http_headers(domain):
     except Exception as e:
         return {"error": str(e)}
 
-def scan_ports(domain):
-    scanner = nmap.PortScanner()
-    try:
-        scanner.scan(domain, '20-1024')  # Basic range of ports
-        open_ports = []
-        for proto in scanner[domain].all_protocols():
-            ports = scanner[domain][proto].keys()
-            open_ports.extend(ports)
-        return sorted(open_ports)
-    except Exception as e:
-        return {"error": str(e)}
+# def scan_ports(domain):
+#     scanner = nmap.PortScanner()
+#     try:
+#         scanner.scan(domain, '20-1024')  # Basic range of ports
+#         open_ports = []
+#         for proto in scanner[domain].all_protocols():
+#             ports = scanner[domain][proto].keys()
+#             open_ports.extend(ports)
+#         return sorted(open_ports)
+#     except Exception as e:
+#         return {"error": str(e)}
 
 def check_tech_stack(domain):
     techs = set()
