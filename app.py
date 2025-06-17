@@ -1,7 +1,7 @@
 import re
 import streamlit as st
 import os
-from scanner import check_ssl, get_http_headers, scan_ports, check_tech_stack
+from scanner import check_ssl, get_http_headers, check_tech_stack
 from report_generator import generate_pdf_report
 
 def clean_domain(input_str):
