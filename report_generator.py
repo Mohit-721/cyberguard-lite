@@ -1,6 +1,7 @@
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from datetime import datetime
+from reportlab.lib.utils import simpleSplit
 
 def draw_divider(c, y, width):
     c.setLineWidth(0.5)
@@ -18,22 +19,31 @@ def generate_pdf_report(domain, ssl_data, headers, ports, techs, file_path):
     y = height - 50
 
     # Header
-    c.setFont("Helvetica-Bold", 22)
-    c.drawString(50, y, "CyberGuard Lite Report")
-    y -= 30
-
-    c.setFont("Helvetica", 12)
-    c.drawString(50, y, f"Domain: {domain}")
-    y -= 20
-    c.drawString(50, y, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    y -= 30
-    draw_divider(c, y, width)
-    y -= 30
-
-    # SSL Section
+    # ——— HTTP Headers Section ———
     c.setFont("Helvetica-Bold", 14)
-    c.drawString(50, y, "SSL Certificate")
+    c.drawString(50, y, "HTTP Headers")
     y -= 20
+    c.setFont("Helvetica", 12)
+
+    if "error" in headers:
+        c.setFillColorRGB(1, 0, 0)
+        c.drawString(60, y, f"❌ {headers['error']}")
+        c.setFillColorRGB(0, 0, 0)
+        y -= 30
+    else:
+        max_width = width - 120  # account for 60-point left indent + 60-point right margin
+        for k, v in headers.items():
+            line = f"{k}: {v}"
+            # split into wrapped sub-lines
+            wrapped = simpleSplit(line, "Helvetica", 12, max_width)
+            for i, sub in enumerate(wrapped):
+                indent = 60 if i == 0 else 80
+                c.drawString(indent, y, sub)
+                y -= 15
+            y -= 5  # small gap between headers
+
+    c.line(50, y, width - 50, y)
+    y -= 30
     c.setFont("Helvetica", 12)
 
     if ssl_data.get("valid"):
