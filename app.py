@@ -37,6 +37,7 @@ if st.button("🚀 Run Security Scan") and domain:
         techs = check_tech_stack(domain)
 
         report_file = f"{domain}_report.pdf"
+        ports=[]
         generate_pdf_report(domain, ssl, headers, ports, techs, report_file)
 
     st.success("✅ Scan Complete!")
