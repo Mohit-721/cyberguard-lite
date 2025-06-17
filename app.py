@@ -33,7 +33,7 @@ if st.button("🚀 Run Security Scan") and domain:
     with st.spinner(f"Scanning {domain}..."):
         ssl = check_ssl(domain)
         headers = get_http_headers(domain)
-        ports = scan_ports(domain)
+        #ports = scan_ports(domain)
         techs = check_tech_stack(domain)
 
         report_file = f"{domain}_report.pdf"
