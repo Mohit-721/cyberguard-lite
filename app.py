@@ -36,8 +36,8 @@ if st.button("🚀 Run Security Scan") and domain:
         #ports = scan_ports(domain)
         techs = check_tech_stack(domain)
 
+        ports = {"error": "Port scanning disabled on this host"}
         report_file = f"{domain}_report.pdf"
-        ports=[]
         generate_pdf_report(domain, ssl, headers, ports, techs, report_file)
 
     st.success("✅ Scan Complete!")
