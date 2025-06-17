@@ -1,7 +1,7 @@
 import requests
 import socket
 import ssl
-import nmap
+#import nmap
 from bs4 import BeautifulSoup
 
 def check_ssl(domain):
