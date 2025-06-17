@@ -3,6 +3,17 @@ import socket
 import requests
 from bs4 import BeautifulSoup
 
+def check_page_break(c, y, height, bottom_margin=50):
+    """
+    If the next draw position y is below bottom_margin, 
+    start a new page and reset y to the top.
+    Returns the possibly-updated y value.
+    """
+    if y < bottom_margin:
+        c.showPage()
+        y = height - 50
+    return y
+
 def check_ssl(domain):
     context = ssl.create_default_context()
     try:
